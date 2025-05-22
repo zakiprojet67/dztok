@@ -74,29 +74,30 @@
 
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js "></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js "></script>
+<script src="https://www.gstatic7.com/firebasejs/9.6.10/firebase-database-compat.js </script>
 
 <script>
   // إعداد Firebase - استبدل هذه القيم ببيانات مشروعك
-  const firebaseConfig = {
-     apiKey: "AIzaSyBrxvmLY9TB-uctjgzh75CJTJ3tACPEQlU",
+ const firebaseConfig = {
+  apiKey: "AIzaSyBrxvmLY9TB-uctjgzh75CJTJ3tACPEQlU",
   authDomain: "socialboost-admin.firebaseapp.com",
   databaseURL: "https://socialboost-admin-default-rtdb.firebaseio.com",
   projectId: "socialboost-admin",
   storageBucket: "socialboost-admin.firebasestorage.app",
   messagingSenderId: "1054042174917",
   appId: "1:1054042174917:web:bc923ca8a5dbbdacdd87ac",
-  };
+  measurementId: "G-7Y9PC4L5GS"
+};
+
 
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
   function loadData(callback) {
-    database.ref('serviceData').once('value').then(snapshot => {
+    firebase.database().ref('serviceData').on('value', snapshot => {
       const data = snapshot.val();
-      callback(data || defaultData);
-    }).catch(() => {
-      callback(defaultData);
+      renderServices(data || defaultData);
+      renderPricing(data || defaultData);
     });
   }
 
