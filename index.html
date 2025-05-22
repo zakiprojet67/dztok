@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SocialBoost</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal&display=swap " rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com "></script>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      font-family: 'Tajawal', sans-serif;
+    }
+  </style>
+</head>
+<body class="antialiased">
+
+<!-- Header -->
+<header class="bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-lg sticky top-0 z-50">
+  <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold">SocialBoost</h1>
+    <nav class="space-x-6 hidden md:flex">
+      <a href="#services" class="hover:underline">الخدمات</a>
+      <a href="#pricing" class="hover:underline">التسعير</a>
+    </nav>
+  </div>
+</header>
+
+<!-- Hero Section -->
+<section class="bg-gradient-to-br from-blue-50 to-purple-50 py-20 text-center">
+  <div class="container mx-auto px-4">
+    <h2 class="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
+      خدمات زيادة المتابعين والمشاهدات
+    </h2>
+    <p class="text-lg md:text-xl text-gray-700 mb-8 max-w-3xl mx-auto">
+      أسعار تنافسية ونتائج مضمونة على TikTok, Instagram, Facebook & Telegram.
+    </p>
+  </div>
+</section>
+
+<!-- Services Section -->
+<section id="services" class="py-20 bg-white">
+  <div class="container mx-auto px-4">
+    <h3 class="text-3xl font-bold text-center mb-12">منصاتنا</h3>
+    <div id="services-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
+  </div>
+</section>
+
+<!-- Pricing Section -->
+<section id="pricing" class="py-20 bg-gray-50">
+  <div class="container mx-auto px-4">
+    <h3 class="text-3xl font-bold text-center mb-12">أسعار الخدمات</h3>
+    <div id="pricing-list" class="grid grid-cols-1 md:grid-cols-2 gap-8"></div>
+  </div>
+</section>
+
+<!-- Request Service Button -->
+<section class="py-20 bg-white text-center">
+  <div class="container mx-auto px-4">
+    <h3 class="text-2xl md:text-3xl font-bold mb-6">هل تحب ما تراه؟ ابدأ الآن!</h3>
+    <p class="text-gray-600 mb-8 max-w-xl mx-auto">يمكنك طلب أي خدمة مباشرة عبر تيليجرام من خلال الضغط على الزر أدناه.</p>
+    <a href="https://t.me/socialmedia_sale " target="_blank" rel="noopener noreferrer"
+       class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-3 rounded-full shadow-lg transform transition hover:scale-105">
+      💬 اطلب الخدمة على تيليجرام
+    </a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-gray-900 text-white py-8">
+  <div class="container mx-auto px-4 text-center">
+    <p>© 2025 SocialBoost. جميع الحقوق محفوظة.</p>
+  </div>
+</footer>
+
+<!-- Load Script -->
+<script src="script.js"></script>
+<script>
+  const data = loadData();
+
+  function renderServices() {
+    const container = document.getElementById('services-list');
+    container.innerHTML = '';
+
+    const icons = {
+      TikTok: "tiktok.png",
+      Instagram: "instagram.png",
+      Facebook: "facebook.png",
+      Telegram: "telegram.png"
+    };
+
+    for (const [platform, services] of Object.entries(data)) {
+      const firstService = services[0];
+      container.innerHTML += `
+        <div class="bg-gray-100 p-6 rounded-lg shadow-md hover:shadow-xl transition text-center">
+          <img src="${icons[platform]}" alt="${platform}" class="w-12 h-12 mx-auto mb-4 object-cover rounded-full border-2 border-white shadow">
+          <h4 class="text-xl font-bold mb-3">${platform}</h4>
+          <p class="text-sm text-gray-600">${firstService.description}</p>
+        </div>
+      `;
+    }
+  }
+
+  function renderPricing() {
+    const container = document.getElementById('pricing-list');
+    container.innerHTML = '';
+    for (const [platform, services] of Object.entries(data)) {
+      let html = `
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="bg-purple-600 text-white px-6 py-4">
+            <h4 class="text-xl font-bold">${platform}</h4>
+          </div>
+          <ul class="divide-y divide-gray-200">
+      `;
+      services.forEach(service => {
+        html += `
+          <li class="flex justify-between items-center px-6 py-3">
+            <span>${service.name}</span>
+            <span class="font-semibold text-purple-600">${service.price}</span>
+          </li>
+          <li class="px-6 py-1 text-sm text-gray-500">${service.description}</li>
+        `;
+      });
+      html += `</ul></div>`;
+      container.innerHTML += html;
+    }
+  }
+
+  window.onload = () => {
+    if (!data || Object.keys(data).length === 0) {
+      localStorage.setItem("serviceData", JSON.stringify(defaultData));
+      location.reload();
+    } else {
+      renderServices();
+      renderPricing();
+    }
+  };
+</script>
+</body>
+</html>
