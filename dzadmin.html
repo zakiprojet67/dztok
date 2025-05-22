@@ -74,23 +74,23 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js "></script>
 
 <script>
-  // إعداد Firebase - استبدل هذه القيم ببيانات مشروعك
- const firebaseConfig = {
-  apiKey: "AIzaSyBrxvmLY9TB-uctjgzh75CJTJ3tACPEQlU",
-  authDomain: "socialboost-admin.firebaseapp.com",
-  databaseURL: "https://socialboost-admin-default-rtdb.firebaseio.com",
-  projectId: "socialboost-admin",
-  storageBucket: "socialboost-admin.firebasestorage.app",
-  messagingSenderId: "1054042174917",
-  appId: "1:1054042174917:web:bc923ca8a5dbbdacdd87ac",
-  measurementId: "G-7Y9PC4L5GS"
-};
+  // إعداد Firebase ← استخدم بيانات المشروع التي أرسلتها
+  const firebaseConfig = {
+    apiKey: "AIzaSyBrxvmLY9TB-uctjgzh75CJTJ3tACPEQlU",
+    authDomain: "socialboost-admin.firebaseapp.com",
+    databaseURL: "https://socialboost-admin-default-rtdb.firebaseio.com/ ",
+    projectId: "socialboost-admin",
+    storageBucket: "socialboost-admin.firebasestorage.app",
+    messagingSenderId: "1054042174917",
+    appId: "1:1054042174917:web:bc923ca8a5dbbdacdd87ac",
+    measurementId: "G-7Y9PC4L5GS"
+  };
 
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
   const database = firebase.database();
 
-  const correctPassword = "20061207"; // ← كلمة المرور التي حددتها
+  const correctPassword = "20061207"; // ← كلمة المرور الخاصة بك
 
   function checkPassword() {
     const password = document.getElementById("passwordInput").value.trim();
@@ -152,7 +152,7 @@
       }
     });
 
-    // حفظ البيانات على Firebase
+    // ✅ سيتم حفظ البيانات على الإنترنت باستخدام Firebase
     firebase.database().ref('serviceData').set(updated).then(() => {
       alert("✅ تم الحفظ بنجاح!");
     }).catch(err => {
