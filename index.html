@@ -3,14 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title> DZTOK STORE </title>
-
-  <!-- Google Fonts -->
+  <title>SocialBoost</title>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal&display=swap " rel="stylesheet">
-
-  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com "></script>
-
   <style>
     body {
       font-family: 'Tajawal', sans-serif;
@@ -22,7 +17,7 @@
 <!-- Header -->
 <header class="bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-lg sticky top-0 z-50">
   <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold">DZTOK STORE</h1>
+    <h1 class="text-2xl font-bold">SocialBoost</h1>
     <nav class="space-x-6 hidden md:flex">
       <a href="#services" class="hover:underline">الخدمات</a>
       <a href="#pricing" class="hover:underline">التسعير</a>
@@ -73,13 +68,88 @@
 <!-- Footer -->
 <footer class="bg-gray-900 text-white py-8">
   <div class="container mx-auto px-4 text-center">
-    <p>© 2025 DZTOK STORE. جميع الحقوق محفوظة.</p>
+    <p>© 2025 SocialBoost. جميع الحقوق محفوظة.</p>
   </div>
 </footer>
 
-<!-- Load Script -->
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js "></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js "></script>
+
 <script>
-  // البيانات الافتراضية - في حال لم يتم العثور على localStorage
+  // إعداد Firebase - استبدل ببيانات مشروعك
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "your-project.firebaseapp.com",
+    databaseURL: "https://your-project-default-rtdb.firebaseio.com/ ",
+    projectId: "your-project-id",
+    storageBucket: "your-project.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  function loadData(callback) {
+    database.ref('serviceData').once('value').then(snapshot => {
+      const data = snapshot.val();
+      callback(data || defaultData);
+    }).catch(() => {
+      callback(defaultData);
+    });
+  }
+
+  function renderServices(data) {
+    const container = document.getElementById('services-list');
+    const icons = {
+      TikTok: "tiktok.png",
+      Instagram: "instagram.png",
+      Facebook: "facebook.png",
+      Telegram: "telegram.png"
+    };
+
+    container.innerHTML = '';
+    for (const [platform, services] of Object.entries(data)) {
+      const firstService = services[0];
+      container.innerHTML += `
+        <div class="bg-gray-100 p-6 rounded-lg shadow-md hover:shadow-xl transition text-center">
+          <img src="${icons[platform]}" alt="${platform}" class="w-12 h-12 mx-auto mb-4 object-cover rounded-full border-2 border-white shadow">
+          <h4 class="text-xl font-bold mb-3">${platform}</h4>
+          <p class="text-sm text-gray-600">${firstService.description}</p>
+        </div>
+      `;
+    }
+  }
+
+  function renderPricing(data) {
+    const container = document.getElementById('pricing-list');
+    container.innerHTML = '';
+
+    for (const [platform, services] of Object.entries(data)) {
+      let html = `
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+          <div class="bg-purple-600 text-white px-6 py-4">
+            <h4 class="text-xl font-bold">${platform}</h4>
+          </div>
+          <ul class="divide-y divide-gray-200">
+      `;
+
+      services.forEach(service => {
+        html += `
+          <li class="flex justify-between items-center px-6 py-3">
+            <span>${service.name}</span>
+            <span class="font-semibold text-purple-600">${service.price}</span>
+          </li>
+          <li class="px-6 py-1 text-sm text-gray-500">${service.description}</li>
+        `;
+      });
+
+      html += `</ul></div>`;
+      container.innerHTML += html;
+    }
+  }
+
   const defaultData = {
     TikTok: [
       { name: "1000 متابع", description: "زيادة المتابعين بجودة عالية", price: "$5" },
@@ -111,67 +181,11 @@
     ]
   };
 
-  function loadData() {
-    const saved = localStorage.getItem("serviceData");
-    return saved ? JSON.parse(saved) : defaultData;
-  }
-
-  function renderServices() {
-    const container = document.getElementById('services-list');
-    const data = loadData();
-
-    const icons = {
-      TikTok: "tiktok.png",
-      Instagram: "instagram.png",
-      Facebook: "facebook.png",
-      Telegram: "telegram.png"
-    };
-
-    container.innerHTML = '';
-    for (const [platform, services] of Object.entries(data)) {
-      const firstService = services[0];
-      container.innerHTML += `
-        <div class="bg-gray-100 p-6 rounded-lg shadow-md hover:shadow-xl transition text-center">
-          <img src="${icons[platform]}" alt="${platform}" class="w-12 h-12 mx-auto mb-4 object-cover rounded-full border-2 border-white shadow">
-          <h4 class="text-xl font-bold mb-3">${platform}</h4>
-          <p class="text-sm text-gray-600">${firstService.description}</p>
-        </div>
-      `;
-    }
-  }
-
-  function renderPricing() {
-    const container = document.getElementById('pricing-list');
-    const data = loadData();
-    container.innerHTML = '';
-
-    for (const [platform, services] of Object.entries(data)) {
-      let html = `
-        <div class="bg-white rounded-lg shadow-md overflow-hidden">
-          <div class="bg-purple-600 text-white px-6 py-4">
-            <h4 class="text-xl font-bold">${platform}</h4>
-          </div>
-          <ul class="divide-y divide-gray-200">
-      `;
-
-      services.forEach(service => {
-        html += `
-          <li class="flex justify-between items-center px-6 py-3">
-            <span>${service.name}</span>
-            <span class="font-semibold text-purple-600">${service.price}</span>
-          </li>
-          <li class="px-6 py-1 text-sm text-gray-500">${service.description}</li>
-        `;
-      });
-
-      html += `</ul></div>`;
-      container.innerHTML += html;
-    }
-  }
-
   window.onload = () => {
-    renderServices();
-    renderPricing();
+    loadData(data => {
+      renderServices(data);
+      renderPricing(data);
+    });
   };
 </script>
 
