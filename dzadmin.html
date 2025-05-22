@@ -7,7 +7,7 @@
   <style>
     body {
       font-family: 'Tajawal', sans-serif;
-      background: #f7fafc;
+      background-color: #f7fafc;
       text-align: center;
       padding: 4rem;
     }
@@ -21,7 +21,7 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    input[type="password"] {
+    input[type="password"], input[type="text"] {
       width: 100%;
       padding: 0.75rem;
       margin-top: 1rem;
@@ -38,7 +38,7 @@
       border: none;
       border-radius: 9999px;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: all 0.3s ease;
     }
 
     button:hover {
@@ -56,13 +56,6 @@
       padding: 0.75rem;
       border-bottom: 1px solid #edf2f7;
     }
-
-    input[type="text"] {
-      width: 100%;
-      padding: 0.5rem;
-      border: 1px solid #cbd5e0;
-      border-radius: 4px;
-    }
   </style>
 </head>
 <body>
@@ -78,7 +71,7 @@
 
 <script src="script.js"></script>
 <script>
-  const correctPassword = "20061207"; // ← كلمة المرور المحددة
+  const correctPassword = "20061207"; // ← كلمة المرور التي حددتها
 
   function checkPassword() {
     const password = document.getElementById("passwordInput").value.trim();
@@ -93,15 +86,15 @@
 
   function renderAdminPanel() {
     const panel = document.getElementById('admin-panel');
-    panel.innerHTML = `
-      <h2 class="text-center">تعديل خدمات المنصات</h2>
-      <div id="admin-tables"></div>
-      <button onclick="saveData()">💾 حفظ التعديلات</button>
-      <a href="index.html" style="display:block;margin-top:1rem;color:#3b82f6;">🏠 العودة للموقع</a>
-    `;
+    const data = loadData();
+
+    let content = `<h2 class="text-center">تعديل خدمات المنصات</h2><div id="admin-tables"></div>`;
+    content += `<button onclick="saveData()">💾 حفظ التعديلات</button>`;
+    content += `<br/><br/><a href="index.html" style="color:#3b82f6;">🏠 العودة للموقع</a>`;
+    panel.innerHTML = content;
 
     const container = document.getElementById('admin-tables');
-    const data = loadData();
+    container.innerHTML = '';
 
     for (const [platform, services] of Object.entries(data)) {
       let html = `
@@ -135,18 +128,19 @@
       const index = parseInt(input.getAttribute('data-index'));
       const field = input.getAttribute('data-field');
 
-      updated[platform][index][field] = input.value.trim();
+      if (updated[platform] && updated[platform][index]) {
+        updated[platform][index][field] = input.value.trim();
+      }
     });
 
     localStorage.setItem("serviceData", JSON.stringify(updated));
     alert("✅ تم الحفظ بنجاح!");
-    location.reload();
   }
 
   window.onload = () => {
     const data = loadData();
     if (!data || Object.keys(data).length === 0) {
-      localStorage.setItem("serviceData", JSON.stringify(defaultData));
+      saveData(defaultData);
       location.reload();
     }
   };
