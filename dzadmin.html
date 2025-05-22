@@ -69,8 +69,26 @@
 
 <div id="admin-panel" class="admin-panel" style="display:none;"></div>
 
-<script src="script.js"></script>
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js "></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-database-compat.js "></script>
+
 <script>
+  // إعداد Firebase - استبدل ببيانات مشروعك
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "your-project.firebaseapp.com",
+    databaseURL: "https://your-project-default-rtdb.firebaseio.com/ ",
+    projectId: "your-project",
+    storageBucket: "your-project.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
   const correctPassword = "20061207"; // ← كلمة المرور التي حددتها
 
   function checkPassword() {
@@ -86,7 +104,7 @@
 
   function renderAdminPanel() {
     const panel = document.getElementById('admin-panel');
-    const data = loadData();
+    const data = localStorage.getItem("serviceData") ? JSON.parse(localStorage.getItem("serviceData")) : defaultData;
 
     let content = `<h2 class="text-center">تعديل خدمات المنصات</h2><div id="admin-tables"></div>`;
     content += `<button onclick="saveData()">💾 حفظ التعديلات</button>`;
@@ -133,16 +151,59 @@
       }
     });
 
-    localStorage.setItem("serviceData", JSON.stringify(updated));
-    alert("✅ تم الحفظ بنجاح!");
+    // حفظ البيانات على Firebase
+    firebase.database().ref('serviceData').set(updated).then(() => {
+      alert("✅ تم الحفظ بنجاح!");
+    }).catch(err => {
+      alert("❌ خطأ في الحفظ: " + err.message);
+    });
   }
 
+  function loadData(callback) {
+    firebase.database().ref('serviceData').once('value').then(snapshot => {
+      const data = snapshot.val();
+      callback(data || defaultData);
+    }).catch(() => {
+      callback(defaultData);
+    });
+  }
+
+  const defaultData = {
+    TikTok: [
+      { name: "1000 متابع", description: "زيادة المتابعين بجودة عالية", price: "$5" },
+      { name: "5000 متابع", description: "زيادة كبيرة للمستخدمين", price: "$20" },
+      { name: "10000 متابع", description: "نتائج فورية وفعالة", price: "$35" },
+      { name: "1000 مشاهدة فيديو", description: "مشاهدات طبيعية", price: "$3" },
+      { name: "1000 لايك", description: "إعجابات حقيقية", price: "$2.5" }
+    ],
+    Instagram: [
+      { name: "1000 متابع", description: "متابعين حقيقيين آمنين", price: "$6" },
+      { name: "5000 متابع", description: "زيادة كبيرة للمستخدمين", price: "$25" },
+      { name: "10000 متابع", description: "نتائج مضمونة", price: "$45" },
+      { name: "1000 لايك", description: "إعجابات حقيقية", price: "$3" },
+      { name: "1000 مشاهدة ستوري", description: "مشاهدات فورية للستوري", price: "$2.5" }
+    ],
+    Facebook: [
+      { name: "1000 متابع", description: "زيادة عضويات الصفحة", price: "$5.5" },
+      { name: "5000 متابع", description: "زيادة كبيرة للمستخدمين", price: "$22" },
+      { name: "10000 متابع", description: "زيادة كبيرة للمستخدمين", price: "$40" },
+      { name: "1000 لايك", description: "إعجابات حقيقية", price: "$3" },
+      { name: "1000 مشاركة", description: "مشاركات نشطة وفاعلة", price: "$4" }
+    ],
+    Telegram: [
+      { name: "1000 مشترك", description: "مشتركين حقيقيين", price: "$4" },
+      { name: "5000 مشترك", description: "زيادة كبيرة للمستخدمين", price: "$18" },
+      { name: "10000 مشترك", description: "زيادة كبيرة للمستخدمين", price: "$32" },
+      { name: "1000 مشاهدة", description: "مشاهدات فيديو", price: "$2" },
+      { name: "1000 تعليق", description: "تعليقات حقيقية", price: "$3.5" }
+    ]
+  };
+
   window.onload = () => {
-    const data = loadData();
-    if (!data || Object.keys(data).length === 0) {
-      saveData(defaultData);
-      location.reload();
-    }
+    loadData(data => {
+      localStorage.setItem("serviceData", JSON.stringify(data));
+      renderAdminPanel();
+    });
   };
 </script>
 
