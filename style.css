@@ -19,6 +19,7 @@ header {
 .logo h1 {
     font-size: 3em;
     color: #6A1B9A; /* Purple Color */
+    font-weight: bold;
 }
 
 nav ul {
@@ -64,6 +65,8 @@ nav ul li a {
 .hero-image img {
     width: 50%;
     max-width: 500px;
+    height: auto;
+    border-radius: 10px;
 }
 
 /* Services Section */
