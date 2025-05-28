@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>عرض صورة</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             margin: 0;
@@ -12,13 +13,34 @@
             align-items: center;
             height: 100vh;
         }
+
         img {
             max-width: 100%;
             max-height: 100vh;
+            display: none;
+        }
+
+        /* العرض العادي (الحاسوب) */
+        .desktop {
+            display: block;
+        }
+
+        /* العرض على الجوال */
+        @media (max-width: 600px) {
+            .desktop {
+                display: none;
+            }
+            .mobile {
+                display: block;
+            }
         }
     </style>
 </head>
 <body>
-    <img src="https://www.dztok.xyz/main.png " alt="الصورة الرئيسية">
+    <!-- الصورة الخاصة بالحاسوب -->
+    <img src="https://www.dztok.xyz/main.png " class="desktop" alt="صورة الحاسوب">
+
+    <!-- الصورة الخاصة بالجوال -->
+    <img src="https://www.dztok.xyz/mob.png " class="mobile" alt="صورة الجوال">
 </body>
 </html>
